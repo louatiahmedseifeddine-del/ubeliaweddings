@@ -15,19 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: item.product.name,
-          description: item.product.description,
-          metadata: {
-            productId: item.product.id,
-            category: item.product.category,
-            customization: item.customization ?? '',
-          },
-        },
-        unit_amount: Math.round(item.product.price * 100), // convert to cents
-      },
+      price: item.stripePriceId ?? 'price_1TQjxaF4tvR5vOt3JJ2k14b5',
       quantity: item.quantity,
     }));
 
