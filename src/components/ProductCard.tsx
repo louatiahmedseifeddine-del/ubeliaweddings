@@ -5,56 +5,76 @@ import Image from 'next/image';
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
 
-interface Props {
-  product: Product;
-}
+const categoryLabel: Record<string, string> = {
+  'guide-book':         'Wedding Guide',
+  'digital-invitation': 'Invitation',
+  'custom-invitation':  'Custom Design',
+};
 
-export default function ProductCard({ product }: Props) {
+export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
 
-  const categoryLabel: Record<string, string> = {
-    'guide-book': 'Guide Book',
-    'digital-invitation': 'Digital Invitation',
-    'custom-invitation': 'Custom Invitation',
-  };
-
   return (
-    <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-blush-100 flex flex-col">
+    <div className="product-card flex flex-col">
+
       {/* Image */}
-      <Link href={`/products/${product.id}`} className="block relative overflow-hidden bg-blush-50 aspect-[4/3]">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+      <Link href={`/products/${product.id}`} className="product-card-img block relative overflow-hidden" style={{ height: '300px' }}>
+        <Image src={product.image} alt={product.name} fill className="object-cover transition-transform duration-700" />
+        <div className="absolute bottom-0 left-0 right-0" style={{ height: '150px', background: 'linear-gradient(to top, var(--cream) 0%, transparent 100%)' }} />
         {product.badge && (
-          <span className="absolute top-3 left-3 bg-gold-400 text-white text-xs font-semibold px-2 py-1 rounded-full">
-            {product.badge}
-          </span>
+          <div className="absolute top-4 right-4" style={{ background: 'var(--charcoal)', padding: '5px 12px' }}>
+            <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '7.5px', fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.35em', color: 'var(--gold)' }}>
+              {product.badge}
+            </span>
+          </div>
         )}
       </Link>
 
-      {/* Details */}
-      <div className="p-5 flex flex-col flex-1">
-        <span className="text-xs text-blush-500 font-medium uppercase tracking-wider mb-1">
+      {/* Content */}
+      <div className="flex flex-col flex-1" style={{ padding: '20px 24px 28px' }}>
+
+        <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '7.5px', fontWeight: 300, textTransform: 'uppercase', letterSpacing: '0.45em', color: 'var(--sage-deep)', marginBottom: '8px' }}>
           {categoryLabel[product.category]}
-        </span>
+        </p>
+
         <Link href={`/products/${product.id}`}>
-          <h3 className="font-serif text-gray-800 text-lg leading-snug mb-2 group-hover:text-blush-700 transition-colors">
+          <h3 style={{ fontFamily: 'var(--font-cormorant)', fontWeight: 300, fontSize: '20px', color: 'var(--mocha)', lineHeight: 1.2, marginBottom: '8px' }}>
             {product.name}
           </h3>
         </Link>
-        <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-4">{product.description}</p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-semibold text-gray-800">${product.price.toFixed(2)}</span>
+
+        {/* Star rating */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}>
+          <span style={{ color: 'var(--gold)', fontSize: '11px', letterSpacing: '1px' }}>★★★★★</span>
+          <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '9px', fontWeight: 300, color: 'var(--sage-deep)' }}>
+            4.9{product.reviewCount ? ` (${product.reviewCount.toLocaleString()})` : ''}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between mt-auto mb-5">
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+            <span style={{ fontFamily: 'var(--font-cormorant)', fontSize: '22px', fontWeight: 300, color: 'var(--mocha)' }}>
+              ${product.price.toFixed(0)}
+            </span>
+            {product.originalPrice && (
+              <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '12px', fontWeight: 300, color: 'var(--sage)', textDecoration: 'line-through' }}>
+                ${product.originalPrice}
+              </span>
+            )}
+          </div>
           <button
-            onClick={() => addItem(product)}
-            className="bg-blush-500 hover:bg-blush-600 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors"
+            style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '8.5px', fontWeight: 300, letterSpacing: '0.3em', color: 'var(--champagne)', background: 'none', border: 'none', cursor: 'pointer', textTransform: 'uppercase', transition: 'color 0.28s ease' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--blush-deep)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--champagne)')}
           >
-            Add to Cart
+            Wishlist ♡
           </button>
         </div>
+
+        <button onClick={() => addItem(product)} className="btn btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
+          Add to Cart
+        </button>
+
       </div>
     </div>
   );
