@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
-      price: item.stripePriceId ?? 'price_1TQjxaF4tvR5vOt3JJ2k14b5',
+      price: 'price_1TQjxaF4tvR5vOt3JJ2k14b5',
       quantity: item.quantity,
     }));
 
